@@ -1,0 +1,10 @@
+name: Space_Map_V2
+account: zhikangx
+server: shinyapps.io
+appId: 382304
+bundleId: 1483586
+url: https://zhikangx.shinyapps.io/Space_Map_V2/
+when: 1531796112.1548
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 2018-07-16_data_promotion.csv|2018-07-16_data_record.csv|2018-07-16_data_source.csv|calculation.Rmd|find_nearby_amenty.Rmd|geo_transfer.Rmd|tetet.R|tstst.R|data/-revisedmurrayfile_111952895138.xls|data/deps.sh|data/superzip.csv|data/superzip.rds|data/zip_codes_states.csv
