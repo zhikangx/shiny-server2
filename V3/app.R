@@ -312,7 +312,7 @@ server <- function(input, output) {
                         ## station
                         nearby_station <- find_nearby_store(target_address,"地铁站" ,800)
                         nearby_station <- calculate_walking_dist(target_address,nearby_station)
-                        write.csv(nearby_station,"nearby_station.csv")
+                        # write.csv(nearby_station,"nearby_station.csv")
                         
                         ## star hotels
                         
@@ -335,7 +335,7 @@ server <- function(input, output) {
                         nearby_star_hotel_1000m_walk <- calculate_walking_dist(target_address,nearby_star_hotel_1000m_str)
                         nearby_star_hotel_1000m_walk <- nearby_star_hotel_1000m_walk[nearby_star_hotel_1000m_walk$walking_distance<1000,]
                         nearby_star_hotel_1000m_walk <- nearby_star_hotel_1000m_walk[nearby_star_hotel_1000m_walk$walking_duration<10,]
-                        write.csv(nearby_star_hotel_1000m_walk,"nearby_star_hotel.csv")
+                        # write.csv(nearby_star_hotel_1000m_walk,"nearby_star_hotel.csv")
                         
                         ## a level office building
                         
@@ -353,14 +353,14 @@ server <- function(input, output) {
                         nearby_stb_store <- calculate_walking_dist(target_address,nearby_stb_store)
                         nearby_stb_store_1000m_walk <- nearby_stb_store[nearby_stb_store$walking_distance<1000,]
                         nearby_stb_store_1000m_walk <- nearby_stb_store_1000m_walk[nearby_stb_store_1000m_walk$walking_duration<10,]
-                        write.csv(nearby_stb_store_1000m_walk,"nearby_stb_store.csv")
+                        # write.csv(nearby_stb_store_1000m_walk,"nearby_stb_store.csv")
                         
                         ### MDC
                         nearby_mdc_store <- find_nearby_store(target_address,"麦当劳",2000)
                         nearby_mdc_store <- calculate_walking_dist(target_address,nearby_mdc_store)
                         nearby_mdc_store_2000m_walk <- nearby_mdc_store[nearby_mdc_store$walking_distance<2000,]
                         nearby_mdc_store_2000m_walk <- nearby_mdc_store_2000m_walk[nearby_mdc_store_2000m_walk$walking_duration<20,]
-                        write.csv(nearby_mdc_store_2000m_walk,"nearby_mdc_store.csv")
+                        # write.csv(nearby_mdc_store_2000m_walk,"nearby_mdc_store.csv")
                         
                         ### restaurants
                         ##################### Considering using meituan or dazhongdianping data
@@ -368,7 +368,7 @@ server <- function(input, output) {
                         restaurant_avg <- mean(as.integer(as.character(nearby_restaurant$price)))
                         nearby_restaurant <- calculate_walking_dist(target_address,nearby_restaurant)
                         nearby_restaurant_1000m_walk <- nearby_restaurant[nearby_restaurant$walking_distance<1000,]
-                        write.csv(nearby_restaurant_1000m_walk,"nearby_restaurant.csv")
+                        # write.csv(nearby_restaurant_1000m_walk,"nearby_restaurant.csv")
                         
                 }
                 
@@ -417,7 +417,7 @@ server <- function(input, output) {
                         }
                         
                         db_nearby_amenty <- rbind(nearby_star_hotel, nearby_mdc_store, nearby_station, nearby_stb_store, nearby_restaurant)
-                        write.csv(db_nearby_amenty,"db_nearby_amenty.csv")
+                        # write.csv(db_nearby_amenty,"db_nearby_amenty.csv")
                         str(db_nearby_amenty)
                         
                         ### Define Function
@@ -493,7 +493,7 @@ server <- function(input, output) {
                         target_address_geo <- target_address_geo[,c("address","city","lat_wgs84","lng_wgs84")]
                         colnames(target_address_geo)[3] <-"lat"
                         colnames(target_address_geo)[4] <-"lng"
-                        write.csv(target_address_geo,"target_address_geo.csv")
+                        # write.csv(target_address_geo,"target_address_geo.csv")
                         
                         db_nearby_amenty <- add_wgs_coor(db_nearby_amenty)
                         str(db_nearby_amenty)
@@ -505,7 +505,7 @@ server <- function(input, output) {
                         
                         ### Export 
                         
-                        write.csv(db_nearby_amenty,"db_nearby_amenty.csv")
+                        # write.csv(db_nearby_amenty,"db_nearby_amenty.csv")
                         
                 }
                 
@@ -593,7 +593,7 @@ server <- function(input, output) {
                                         }
                                 }
                         }
-                        write.csv(result,"result_grading.csv")
+                        # write.csv(result,"result_grading.csv")
                 }
                 
                 
