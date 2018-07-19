@@ -130,20 +130,13 @@ ui <- navbarPage("XMAP", id="nav",
                                 ),
                                 hr(),
                                 hr(),
-                                # Read Input
-                                # fluidRow(
-                                #         column(6, offset = 4,
-                                #         textInput("caption", "Address", "Input Address"),
-                                #         verbatimTextOutput("value")
-                                #         )
-                                #         ),
                                 
                                 # If not using custom CSS, set height of leafletOutput to a number instead of percent
                                 leafletOutput("map", width="100%", height="100%"),
                                 
                                 # Shiny versions prior to 0.11 should use class = "modal" instead.
                                 absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
-                                              draggable = TRUE, top = 100, left = "auto", right = 20, bottom = "auto",
+                                              draggable = TRUE, top = 800, left = "auto", right = 20, bottom = "auto",
                                               width = 330, height = "auto",
                                               # Read Input
                                               h2("Space Explorer"),
@@ -155,67 +148,16 @@ ui <- navbarPage("XMAP", id="nav",
                                                              actionButton("button", "Explore Space", class="btn-block")
                                                       )
                                               )
-                                              
-                                              # selectInput("color", "Color", vars),
-                                              # selectInput("size", "Size", vars, selected = "adultpop"),
-                                              # conditionalPanel("input.color == 'superzip' || input.size == 'superzip'",
-                                              #                  # Only prompt for threshold when coloring or sizing by superzip
-                                              #                  numericInput("threshold", "SuperZIP threshold (top n percentile)", 5)
-                                              # )
-                                              
-                                              # plotOutput("histCentile", height = 200),
-                                              # plotOutput("scatterCollegeIncome", height = 250)
+                                             
                                 )
-                                
-                                # tags$div(id="cite",
-                                #          'Data compiled for ', tags$em('Coming Apart: The State of White America, 1960–2010'), ' by Charles Murray (Crown Forum, 2012).'
-                                # )
                             )
                    ),
                    
                    tabPanel("Grading",
-                            # fluidRow(
-                            #         column(3,
-                            #                selectInput("states", "States", c("All states"="", structure(state.abb, names=state.name), "Washington, DC"="DC"), multiple=TRUE)
-                            #         ),
-                            #         column(3,
-                            #                conditionalPanel("input.states",
-                            #                                 selectInput("cities", "Cities", c("All cities"=""), multiple=TRUE)
-                            #                )
-                            #         ),
-                            #         column(3,
-                            #                conditionalPanel("input.states",
-                            #                                 selectInput("zipcodes", "Zipcodes", c("All zipcodes"=""), multiple=TRUE)
-                            #                )
-                            #         )
-                            # ),
-                            # fluidRow(
-                            #         column(1,
-                            #                numericInput("minScore", "Min score", min=0, max=100, value=0)
-                            #         ),
-                            #         column(1,
-                            #                numericInput("maxScore", "Max score", min=0, max=100, value=100)
-                            #         )
-                            # ),
-                            
                             hr(),
                             DT::dataTableOutput("grading")
-                            
-                            #
-                            # fluidRow(
-                            #         column(2, plotOutput("plot_1")),
-                            #         column(2, plotOutput("plot_2")))
-                            
-                            # fluidRow(
-                            #         column(8, DT::dataTableOutput("grading")),
-                            #         column(4, plotOutput("plot_2")))
                    ),
-                   
-                   tabPanel("Data explorer",
-                            hr(),
-                            DT::dataTableOutput("record")
-                   ),
-                   
+         
                    
                    conditionalPanel("false", icon("crosshair"))
         )
@@ -223,7 +165,7 @@ ui <- navbarPage("XMAP", id="nav",
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-       
+        
         output$map <- renderLeaflet({
                 
                 input$button
@@ -234,7 +176,7 @@ server <- function(input, output) {
                 ## Set Target Address
                 # target_name <- "上海市银城中路488号"
                 # target_name <- "上海市江宁路396号"
-                target_name <- "上海市静安区愚园路68号"
+                # target_name <- "上海市静安区愚园路68号"
                 # target_name <- as.character(input$caption)
                 
                 target_address <- getGeocoding(address = target_name, city = '上海', ak = 'ZxjZ6VnwlxvRarbnVtg38IcCwpiGLZzN')
@@ -244,7 +186,7 @@ server <- function(input, output) {
                 ## Set seed
                 set.seed(100)
                 
-                ## Process data for get nearby stores
+                ## Process data to get nearby stores
                 
                 if (1==1) {
                         
@@ -710,12 +652,376 @@ server <- function(input, output) {
         
         output$grading <- DT::renderDataTable({
                 
+                
                 input$button
                 # isolate({
-                #         result <- result
+                #         target_name <- as.character(input$caption)
                 # })
-                result <- read.csv("result_grading.csv",stringsAsFactors = FALSE)
-                result <- result[,2:5]
+                target_name <- as.character(input$caption)
+                ## Set Target Address
+                # target_name <- "上海市银城中路488号"
+                # target_name <- "上海市江宁路396号"
+                # target_name <- "上海市静安区愚园路68号"
+                # target_name <- as.character(input$caption)
+                
+                target_address <- getGeocoding(address = target_name, city = '上海', ak = 'ZxjZ6VnwlxvRarbnVtg38IcCwpiGLZzN')
+                target_address_geo <- target_address
+                range <- 1000
+                
+                ## Set seed
+                set.seed(100)
+                
+                ## Process data for get nearby stores
+                
+                if (1==1) {
+                        
+                        ## Find nearby stations
+                        
+                        ### Define Functions 
+                        
+                        find_nearby_store <- function(target_address,store_name,range) {
+                                store <- store_name
+                                target <- target_address
+                                set_range <- range
+                                nearbystores <- searchPlace(store, location = c(target$lat,target$lng), radius = set_range,ak = "ZxjZ6VnwlxvRarbnVtg38IcCwpiGLZzN")
+                                return(nearbystores)
+                        }
+                        
+                        calculate_walking_dist <- function(origin_address,dest) {
+                                destination <- dest
+                                origin <- origin_address
+                                
+                                destination$walking_distance <- NA
+                                destination$walking_duration <- NA
+                                
+                                for (i in 1:nrow(destination)) {
+                                        t <- searchDirection(origin = paste(origin$lat,origin$lng,sep = ","), destination = paste(destination$lat[i],destination$lng[i],sep = ","), mode = "walking", region = "Shanghai", ak = "ZxjZ6VnwlxvRarbnVtg38IcCwpiGLZzN")
+                                        a <- t$result$routes
+                                        destination$walking_distance[i] <- a[[1]]$distance
+                                        destination$walking_duration[i] <- a[[1]]$duration
+                                        # print(i)
+                                }
+                                destination$walking_duration <- destination$walking_duration/60
+                                destination <- destination[,c("name","lat","lng","address","distance","walking_distance","walking_duration")]
+                                return(destination)
+                        }
+                        
+                        # calculate_walking_dist(target_name, landmark_geo)
+                        # wk_dis_to_centerarea <- calculate_walking_dist(target_name, centerarea_geo)
+                        
+                        find_geo_location <- function(target_list) {
+                                target_list <-star_hotel
+                                target <- target_list
+                                target$lat <- 0
+                                target$lng <- 0
+                                
+                                for (i in 1:nrow(target)) {
+                                        # i=1
+                                        tem_address <- getGeocoding(address = target$address[i], city = '上海', ak = 'ZxjZ6VnwlxvRarbnVtg38IcCwpiGLZzN')
+                                        target$lat[i] <- tem_address$lat
+                                        target$lng[i] <- tem_address$lng
+                                }
+                                return(target)
+                        }
+                        
+                        calculate_straight_dist <- function(target,storelist) {
+                                # target <- target_location
+                                # storelist <- store_info
+                                storelist$distance <- NA
+                                for (i in 1:nrow(storelist)) {
+                                        storelist$distance[i] <- distm(c(storelist$lng[i], storelist$lat[i]), c(target$lng[1], target$lat[1]), fun = distHaversine)
+                                }
+                                return(storelist)
+                        }
+                        
+                        ### Apply functions
+                        
+                        ## station
+                        nearby_station <- find_nearby_store(target_address,"地铁站" ,800)
+                        nearby_station <- calculate_walking_dist(target_address,nearby_station)
+                        # write.csv(nearby_station,"nearby_station.csv")
+                        
+                        ## star hotels
+                        
+                        ### get geo first
+                        # star_hotel <- read.csv("~/Desktop/Mixpace/ShinyMap/grading/star_hotel.csv",stringsAsFactors = FALSE)
+                        # str(star_hotel)
+                        # star_hotel_geo <- find_geo_location(star_hotel)
+                        # write.csv(star_hotel_geo,"star_hotel_geo.csv")
+                        
+                        star_hotel_geo <- read.csv("star_hotel_geo.csv",stringsAsFactors = FALSE)
+                        str(star_hotel_geo)
+                        
+                        ### calculate distnce
+                        nearby_star_hotel <- calculate_straight_dist(target_address,star_hotel_geo)
+                        
+                        ### filter distance that are less than 1000m
+                        nearby_star_hotel_1000m_str <- nearby_star_hotel[nearby_star_hotel$distance<1001,]
+                        
+                        ### calculate wk dis for these hotels
+                        nearby_star_hotel_1000m_walk <- calculate_walking_dist(target_address,nearby_star_hotel_1000m_str)
+                        nearby_star_hotel_1000m_walk <- nearby_star_hotel_1000m_walk[nearby_star_hotel_1000m_walk$walking_distance<1000,]
+                        nearby_star_hotel_1000m_walk <- nearby_star_hotel_1000m_walk[nearby_star_hotel_1000m_walk$walking_duration<10,]
+                        # write.csv(nearby_star_hotel_1000m_walk,"nearby_star_hotel.csv")
+                        
+                        ## a level office building
+                        
+                        ### waiting for data
+                        
+                        ## massive business
+                        
+                        ### find data of nearby shopping center
+                        
+                        ### find data of average price of each shopping center
+                        
+                        ## Starbucks
+                        
+                        nearby_stb_store <- find_nearby_store(target_address,"星巴克",1000)
+                        nearby_stb_store <- calculate_walking_dist(target_address,nearby_stb_store)
+                        nearby_stb_store_1000m_walk <- nearby_stb_store[nearby_stb_store$walking_distance<1000,]
+                        nearby_stb_store_1000m_walk <- nearby_stb_store_1000m_walk[nearby_stb_store_1000m_walk$walking_duration<10,]
+                        # write.csv(nearby_stb_store_1000m_walk,"nearby_stb_store.csv")
+                        
+                        ### MDC
+                        nearby_mdc_store <- find_nearby_store(target_address,"麦当劳",2000)
+                        nearby_mdc_store <- calculate_walking_dist(target_address,nearby_mdc_store)
+                        nearby_mdc_store_2000m_walk <- nearby_mdc_store[nearby_mdc_store$walking_distance<2000,]
+                        nearby_mdc_store_2000m_walk <- nearby_mdc_store_2000m_walk[nearby_mdc_store_2000m_walk$walking_duration<20,]
+                        # write.csv(nearby_mdc_store_2000m_walk,"nearby_mdc_store.csv")
+                        
+                        ### restaurants
+                        ##################### Considering using meituan or dazhongdianping data
+                        nearby_restaurant <- find_nearby_store(target_address,"餐厅",1000)
+                        restaurant_avg <- mean(as.integer(as.character(nearby_restaurant$price)))
+                        nearby_restaurant <- calculate_walking_dist(target_address,nearby_restaurant)
+                        nearby_restaurant_1000m_walk <- nearby_restaurant[nearby_restaurant$walking_distance<1000,]
+                        # write.csv(nearby_restaurant_1000m_walk,"nearby_restaurant.csv")
+                        
+                }
+                
+                ## Process data for geo transfer
+                
+                if (1==1) {
+                        
+                        ### Read Data
+                        
+                        nearby_star_hotel <- nearby_star_hotel_1000m_walk
+                        nearby_mdc_store <- nearby_mdc_store_2000m_walk
+                        nearby_station <- nearby_station
+                        nearby_stb_store <- nearby_stb_store_1000m_walk
+                        nearby_restaurant <- nearby_restaurant_1000m_walk
+                        
+                        ### Clean and Combine data
+                        
+                        str(nearby_star_hotel)
+                        nearby_star_hotel <- nearby_star_hotel[,c("name","lat","lng","address","walking_distance","walking_duration")]
+                        if (nrow(nearby_star_hotel)>0) {
+                                nearby_star_hotel$cid <- "hotel"       
+                        }
+                        
+                        str(nearby_mdc_store)
+                        nearby_mdc_store <- nearby_mdc_store[,c("name","lat","lng","address","walking_distance","walking_duration")]
+                        if (nrow(nearby_mdc_store)>0) {
+                                nearby_mdc_store$cid <- "mdc"       
+                        }
+                        
+                        str(nearby_station)
+                        nearby_station <- nearby_station[,c("name","lat","lng","address","walking_distance","walking_duration")]
+                        if (nrow(nearby_station)>0) {
+                                nearby_station$cid <- "station"       
+                        }
+                        
+                        str(nearby_stb_store)
+                        nearby_stb_store <- nearby_stb_store[,c("name","lat","lng","address","walking_distance","walking_duration")]
+                        if (nrow(nearby_stb_store)>0) {
+                                nearby_stb_store$cid <- "stb"       
+                        }
+                        
+                        str(nearby_restaurant)
+                        nearby_restaurant <- nearby_restaurant[,c("name","lat","lng","address","walking_distance","walking_duration")]
+                        if (nrow(nearby_restaurant)>0) {
+                                nearby_restaurant$cid <- "restaurant"       
+                        }
+                        
+                        db_nearby_amenty <- rbind(nearby_star_hotel, nearby_mdc_store, nearby_station, nearby_stb_store, nearby_restaurant)
+                        # write.csv(db_nearby_amenty,"db_nearby_amenty.csv")
+                        str(db_nearby_amenty)
+                        
+                        ### Define Function
+                        
+                        ### Define Transform Function
+                        
+                        a = 6378245.0
+                        x_pi = 3.14159265358979324 * 3000.0 / 180.0
+                        ee = 0.00669342162296594323
+                        pi = 3.1415926535897932384626
+                        
+                        transformlat <- function(lng, lat) {
+                                ret = -100.0 + 2.0 * lng + 3.0 * lat + 0.2 * lat * lat + 0.1 * lng * lat + 0.2 * sqrt(abs(lng))
+                                ret <- ret + (20.0 * sin(6.0 * lng * pi) + 20.0 * sin(2.0 * lng * pi)) * 2.0 / 3.0
+                                ret <- ret + (20.0 * sin(lat * pi) + 40.0 * sin(lat / 3.0 * pi)) * 2.0 / 3.0
+                                ret <- ret + (160.0 * sin(lat / 12.0 * pi) + 320 * sin(lat * pi / 30.0)) * 2.0 / 3.0
+                                return(ret)
+                        }
+                        
+                        transformlng <- function(lng,  lat) {
+                                ret = 300.0 + lng + 2.0 * lat + 0.1 * lng * lng + 0.1 * lng * lat + 0.1 * sqrt(abs(lng))
+                                ret <- ret + (20.0 * sin(6.0 * lng * pi) + 20.0 * sin(2.0 * lng * pi)) * 2.0 / 3.0
+                                ret <- ret + (20.0 * sin(lng * pi) + 40.0 * sin(lng / 3.0 * pi)) * 2.0 / 3.0
+                                ret <- ret + (150.0 * sin(lng / 12.0 * pi) + 300.0 * sin(lng / 30.0 * pi)) * 2.0 / 3.0
+                                return(ret)
+                        }
+                        
+                        bd09togcj02 <- function(bd_lon, bd_lat) {
+                                x = bd_lon - 0.0065
+                                y = bd_lat - 0.006
+                                z = sqrt(x * x + y * y) - 0.00002 * sin(y * x_pi)
+                                theta = atan2(y, x) - 0.000003 * cos(x * x_pi)
+                                gg_lng = z * cos(theta)
+                                gg_lat = z * sin(theta)
+                                return(c(gg_lng, gg_lat))
+                        }
+                        
+                        gcj02towgs84 <- function(lng, lat) {
+                                dlat = transformlat(lng - 105.0, lat - 35.0)
+                                dlng = transformlng(lng - 105.0, lat - 35.0)
+                                radlat = lat / 180.0 * pi
+                                magic = sin(radlat)
+                                magic = 1 - ee * magic * magic
+                                sqrtmagic = sqrt(magic)
+                                dlat = (dlat * 180.0) / ((a * (1 - ee)) / (magic * sqrtmagic) * pi)
+                                dlng = (dlng * 180.0) / (a / sqrtmagic * cos(radlat) * pi)
+                                mglat = lat + dlat
+                                mglng = lng + dlng
+                                return( c(lng * 2 - mglng, lat * 2 - mglat))
+                        }
+                        
+                        add_wgs_coor <- function(org_data) {
+                                data_filter <- org_data
+                                data_filter$lat_wgs84 <- 0
+                                data_filter$lng_wgs84 <- 0        
+                                
+                                for (i in 1:nrow(data_filter)) {
+                                        tem_lat <- data_filter[i,"lat"]
+                                        tem_lng <- data_filter[i,"lng"]
+                                        new_gps_1 <- bd09togcj02(tem_lng,tem_lat)
+                                        new_gps_1_lat <- new_gps_1[2]
+                                        new_gps_1_lng <- new_gps_1[1]
+                                        new_gps_2 = gcj02towgs84(new_gps_1_lng, new_gps_1_lat)
+                                        data_filter$lat_wgs84[i] <- new_gps_2[2]
+                                        data_filter$lng_wgs84[i] <- new_gps_2[1]
+                                }
+                                return(data_filter)
+                        }
+                        
+                        ### Apply function 
+                        
+                        target_address_geo <- add_wgs_coor(target_address)
+                        target_address_geo <- target_address_geo[,c("address","city","lat_wgs84","lng_wgs84")]
+                        colnames(target_address_geo)[3] <-"lat"
+                        colnames(target_address_geo)[4] <-"lng"
+                        # write.csv(target_address_geo,"target_address_geo.csv")
+                        
+                        db_nearby_amenty <- add_wgs_coor(db_nearby_amenty)
+                        str(db_nearby_amenty)
+                        
+                        db_nearby_amenty <- db_nearby_amenty[,c("name","lat_wgs84","lng_wgs84","address","walking_distance","walking_duration","cid")]
+                        colnames(db_nearby_amenty)[2] <-"lat"
+                        colnames(db_nearby_amenty)[3] <-"lng"
+                        str(db_nearby_amenty)
+                        
+                }
+                
+                ## Read data
+                if (1==1) {
+                        db_nearby_amenty <- db_nearby_amenty
+                        db_nearby_amenty <- db_nearby_amenty[,c("name","lat","lng","address","walking_distance","walking_duration","cid")]
+                        df_center_road <- read.csv("df_center_road.csv",stringsAsFactors = FALSE)
+                        df_landmark <- read.csv("df_landmark.csv",stringsAsFactors = FALSE)
+                }
+                
+                ## Grading
+                
+                if (1==1) {
+                        result <- data.frame(Criteria=character(),
+                                             data=numeric(),
+                                             minimum_standard=numeric(),
+                                             pass_or_not=character(),
+                                             stringsAsFactors = FALSE)
+                        ### Define each criteria
+                        result[1,"Criteria"] <- "800米内地铁站数量"
+                        result[2,"Criteria"] <- "800米内最近地铁站步行距离"
+                        result[3,"Criteria"] <- "800米内最近地铁站步行时间"
+                        result[4,"Criteria"] <- "1000米内4/5星级饭店数量"
+                        result[5,"Criteria"] <- "1000米甲级写字楼数量"
+                        result[6,"Criteria"] <- "1000米规模商业大众点评人均价格"
+                        result[7,"Criteria"] <- "1000米内星巴克数量"
+                        result[8,"Criteria"] <- "1000米内最近星巴克步行距离"
+                        result[9,"Criteria"] <- "1000米内最近星巴克步行时间"
+                        result[10,"Criteria"] <- "2000米内麦当劳数量"
+                        result[11,"Criteria"] <- "2000米内最近麦当劳步行距离"
+                        result[12,"Criteria"] <- "2000米内最近麦当劳步行时间"
+                        result[13,"Criteria"] <- "1000米内餐馆数量"
+                        result[14,"Criteria"] <- "1000米内餐馆百度地图人均价格"
+                        
+                        ### Fill in data
+                        tem <- subset(db_nearby_amenty,cid=="station")
+                        if (nrow(tem)>0) {
+                                result[1,"data"] <- nrow(tem)
+                                result[2,"data"] <- min(tem$walking_distance)
+                                result[3,"data"] <- round(min(tem$walking_duration),1)
+                        }
+                        
+                        tem <- subset(db_nearby_amenty,cid=="hotel")
+                        if (nrow(tem)>0) {
+                                result[4,"data"] <- nrow(tem)
+                        }
+                        
+                        tem <- subset(db_nearby_amenty,cid=="stb")
+                        if (nrow(tem)>0) {
+                                result[7,"data"] <- nrow(tem)
+                                result[8,"data"] <- min(tem$walking_distance)
+                                result[9,"data"] <- round(min(tem$walking_duration),1)
+                        }
+                        
+                        tem <- subset(db_nearby_amenty,cid=="mdc")
+                        if (nrow(tem)>0) {
+                                result[10,"data"] <- nrow(tem)
+                                result[11,"data"] <- min(tem$walking_distance)
+                                result[12,"data"] <- round(min(tem$walking_duration),1)
+                        }
+                        
+                        tem <- subset(db_nearby_amenty,cid=="restaurant")
+                        if (nrow(tem)>0) {
+                                result[13,"data"] <- nrow(tem)
+                                result[14,"data"] <- restaurant_avg
+                        }
+                        
+                        
+                        ## Set Minimum Standard
+                        
+                        result$minimum_standard <- c(1,800,10,1,1,59,1,1000,10,1,2000,20,10,30)
+                        result
+                        str(result)
+                        
+                        ## Judging weather pass or not 
+                        for (i in 1:nrow(result)) {
+                                if (!is.na(result$data)[i]) {
+                                        if (is.na(result$data)[i]>=is.na(result$minimum_standard)[i]) {
+                                                result$pass_or_not[i] <- "yes"
+                                        }
+                                        else{
+                                                result$pass_or_not[i] <- "no"
+                                        }
+                                }
+                        }
+                        # write.csv(result,"result_grading.csv")
+                }
+                
+                
+                
+                # result <- read.csv("result_grading.csv",stringsAsFactors = FALSE)
+                # result <- result[,2:5]
                 result_rec <- result
                 colnames(result_rec) <- c("维度","数据","最低要求","是否通过")
                 datatable(result_rec, filter = 'top', options = list(
@@ -723,31 +1029,11 @@ server <- function(input, output) {
                 ))
         })
         
-        output$record <- DT::renderDataTable({
-                input$button
-                db_nearby_amenty <- read.csv("db_nearby_amenty.csv",stringsAsFactors = FALSE)
-                db_nearby_amenty_rec <- db_nearby_amenty[,c("name","address","walking_distance","walking_duration","cid")]
-                db_nearby_amenty_rec$walking_duration <- round(as.numeric(db_nearby_amenty_rec$walking_duration),1)
-                colnames(db_nearby_amenty_rec) <- c("名称","地址","步行距离(米)","步行时间(分钟)","设施分类")
-                datatable(db_nearby_amenty_rec, filter = 'top', options = list(
-                        pageLength = 20, autoWidth = TRUE
-                ))
-                
-        })
-        
-        # output$plot_1 = renderPlot({
-        #         plot(cars)
-        # })
-        # 
-        # output$plot_2 = renderPlot({
-        #         hist(cars)
-        # })
-        
-        output$value <- renderText({ input$caption })
-        
 }
            
   
 # Run the application 
 shinyApp(ui = ui, server = server)
+
+
 
