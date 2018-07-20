@@ -570,7 +570,7 @@ server <- function(input, output) {
                 db_nearby_amenty_restaurant <- db_nearby_amenty[db_nearby_amenty$cid=="restaurant",]
                
                 # Add mixpace and competitor
-                m <- addAwesomeMarkers(m, lng = db_nearby_amenty_restaurant$lng, lat = db_nearby_amenty_restaurant$lat, popup=db_nearby_amenty_restaurant$name,icon = icon.fa.restaurant, group = ("7. nearby Restaurant"))
+                m <- addAwesomeMarkers(m, lng = db_nearby_amenty_restaurant$lng, lat = db_nearby_amenty_restaurant$lat, popup=db_nearby_amenty_restaurant$name,icon = icon.fa.restaurant, group = ("6. nearby Restaurant"))
                 m = addCircles(m, lng = df_competor_bj$lng, lat = df_competor_bj$lat, weight = 1,color = "purple", radius = sqrt(df_competor_bj$seat) * 15, label = df_competor_bj$brand, labelOptions = labelOptions(noHide = F, direction = 'bottom',offset=c(0,15)), group = "X4 - All Competitors(seat)")
                 m = addCircles(m, lng = df_competor_bj$lng, lat = df_competor_bj$lat, weight = 1,color = "orange", radius = 500, label = df_competor_bj$brand, labelOptions = labelOptions(noHide = F, direction = 'bottom',offset=c(0,15)), group = "X3 - All Competitors(500m)")
                 m = addCircles(m, lng = mixpace_geo_bj$lng, lat = mixpace_geo_bj$lat, weight = 1,color = "blue", radius = sqrt(3500) * 15, label = mixpace_geo_bj$name, labelOptions = labelOptions(noHide = F, direction = 'bottom',offset=c(0,15)), group = "X2 - Mixpace(seat)")
