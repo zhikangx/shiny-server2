@@ -351,7 +351,7 @@ data_promotion_latest <- data_exp_by_promotion
 data_promotion_latest <- data_promotion_latest[,c("date","promotion_name","freq")]
 
 data_record_latest <- data_exp_rec
-data_record_latest <- data_record_latest[,c("id","date","Hour","time","tel","purpose")]
+data_record_latest <- data_record_latest[,c("id","date","Hour","time","purpose")]
 
 data_source_latest <- data_exp_by_source
 data_source_latest <- data_source_latest[,c("date","source_type","freq")]
