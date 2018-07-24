@@ -41,7 +41,9 @@ if (1==1) {
         }
         
         if(!require("RbaiduLBS")){
-                install.packages("RbaiduLBS")
+                install.packages("devtools")
+                library("devtools")
+                install_github("lijian13/RbaiduLBS")
                 library("RbaiduLBS")
         }
         
