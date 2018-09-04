@@ -293,16 +293,16 @@ data_clean$purpose <- NA
 
 for (i in 1:nrow(data_clean)) {
         # i=1
-        if (data_clean$purpose_id[i]==1) {
+        if (data_clean$purpose_id[i]==1 && !is.na(data_clean$purpose_id[i])) {
                 data_clean$purpose[i] <- "Bangong xuanzhi"
         }
-        else if (data_clean$purpose_id[i]==2) {
+        else if (data_clean$purpose_id[i]==2 && !is.na(data_clean$purpose_id[i])) {
                 data_clean$purpose[i] <- "Paizhao"
         }
-        else if (data_clean$purpose_id[i]==3) {
+        else if (data_clean$purpose_id[i]==3 && !is.na(data_clean$purpose_id[i])) {
                 data_clean$purpose[i] <- "Yue huodong Changdi"
         }
-        else if (data_clean$purpose_id[i]==4) {
+        else if (data_clean$purpose_id[i]==4 && !is.na(data_clean$purpose_id[i])) {
                 data_clean$purpose[i] <- "Shangwu Hezuo"
         }
         else
